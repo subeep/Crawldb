@@ -43,7 +43,7 @@ async def list_pages(
 
 
 @router.get("/pages/{url:path}")
-async def get_page(url: str) -> dict:
+async def get_page(url: str, raw_html: bool = Query(False, description="Include raw HTML in JSON response")) -> dict:
     """Get a single crawled page by URL."""
     mongo = get_mongo()
 
@@ -57,7 +57,7 @@ async def get_page(url: str) -> dict:
     if not page:
         return {"error": "Page not found", "url": url}
 
-    return {
+    result = {
         "url": page.url,
         "domain": page.domain,
         "title": page.title,
@@ -70,3 +70,25 @@ async def get_page(url: str) -> dict:
         "fetch_time_ms": page.fetch_time_ms,
         "crawled_at": page.crawled_at.isoformat() if page.crawled_at else None,
     }
+    if raw_html:
+        result["html"] = page.html
+    return result
+
+
+from fastapi.responses import HTMLResponse
+
+@router.get("/pages/{url:path}/html", response_class=HTMLResponse)
+async def get_page_html(url: str):
+    """Get the raw HTML content of a crawled page to view in browser."""
+    mongo = get_mongo()
+    page = await mongo.get_page(url)
+    if not page and not url.startswith("http"):
+        page = await mongo.get_page(f"https://{url}")
+        if not page:
+            page = await mongo.get_page(f"http://{url}")
+
+    if not page:
+        return HTMLResponse(content="<h1>Page not found</h1>", status_code=404)
+
+    return HTMLResponse(content=page.html)
+
