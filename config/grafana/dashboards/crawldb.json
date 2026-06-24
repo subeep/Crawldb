@@ -1,0 +1,60 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "crawldb-main",
+    "title": "CrawlDB Overview",
+    "timezone": "browser",
+    "refresh": "10s",
+    "time": { "from": "now-1h", "to": "now" },
+    "panels": [
+      {
+        "id": 1, "type": "stat", "title": "Pages Crawled",
+        "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+        "targets": [{ "expr": "crawldb_pages_crawled_total", "legendFormat": "total" }],
+        "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "#6366f1" } } }
+      },
+      {
+        "id": 2, "type": "stat", "title": "Pages Indexed",
+        "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+        "targets": [{ "expr": "crawldb_pages_indexed_total", "legendFormat": "total" }],
+        "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "#06b6d4" } } }
+      },
+      {
+        "id": 3, "type": "stat", "title": "Duplicates Skipped",
+        "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+        "targets": [{ "expr": "crawldb_duplicates_skipped_total", "legendFormat": "total" }],
+        "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "#f59e0b" } } }
+      },
+      {
+        "id": 4, "type": "stat", "title": "Queue Depth",
+        "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+        "targets": [{ "expr": "crawldb_queue_depth", "legendFormat": "depth" }],
+        "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "#a855f7" } } }
+      },
+      {
+        "id": 5, "type": "timeseries", "title": "Crawl Throughput (pages/min)",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+        "targets": [{ "expr": "rate(crawldb_pages_crawled_total[1m]) * 60", "legendFormat": "pages/min" }]
+      },
+      {
+        "id": 6, "type": "timeseries", "title": "Fetch Latency (p50, p95, p99)",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+        "targets": [
+          { "expr": "histogram_quantile(0.5, rate(crawldb_fetch_duration_seconds_bucket[5m]))", "legendFormat": "p50" },
+          { "expr": "histogram_quantile(0.95, rate(crawldb_fetch_duration_seconds_bucket[5m]))", "legendFormat": "p95" },
+          { "expr": "histogram_quantile(0.99, rate(crawldb_fetch_duration_seconds_bucket[5m]))", "legendFormat": "p99" }
+        ]
+      },
+      {
+        "id": 7, "type": "timeseries", "title": "Errors by Type",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+        "targets": [{ "expr": "rate(crawldb_errors_total[5m])", "legendFormat": "{{error_type}}" }]
+      },
+      {
+        "id": 8, "type": "timeseries", "title": "Queue Depth Over Time",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+        "targets": [{ "expr": "crawldb_queue_depth", "legendFormat": "queue depth" }]
+      }
+    ]
+  }
+}

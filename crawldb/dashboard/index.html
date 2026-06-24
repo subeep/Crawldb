@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CrawlDB — Distributed Web Crawler & Search Index Dashboard">
+    <title>CrawlDB — Web Crawler Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="header" id="header">
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <circle cx="14" cy="14" r="12" stroke="url(#grad)" stroke-width="2.5" fill="none"/>
+                        <path d="M8 14C8 10.686 10.686 8 14 8" stroke="url(#grad)" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M14 20C17.314 20 20 17.314 20 14" stroke="url(#grad)" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="14" cy="14" r="3" fill="url(#grad)"/>
+                        <defs><linearGradient id="grad" x1="0" y1="0" x2="28" y2="28"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#a855f7"/></linearGradient></defs>
+                    </svg>
+                </div>
+                <h1 class="logo-text">CrawlDB</h1>
+            </div>
+            <span class="version-badge">v1.0</span>
+        </div>
+        <div class="header-right">
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-dot"></span>
+                <span class="status-text">Connecting...</span>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <section class="stats-grid" id="statsGrid">
+            <div class="stat-card" data-stat="pages_crawled"><div class="stat-icon pages-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="stat-content"><span class="stat-value" id="statPagesCrawled">0</span><span class="stat-label">Pages Crawled</span></div></div>
+            <div class="stat-card" data-stat="pages_indexed"><div class="stat-icon indexed-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="stat-content"><span class="stat-value" id="statPagesIndexed">0</span><span class="stat-label">Pages Indexed</span></div></div>
+            <div class="stat-card" data-stat="unique_domains"><div class="stat-icon domains-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div class="stat-content"><span class="stat-value" id="statDomains">0</span><span class="stat-label">Domains</span></div></div>
+            <div class="stat-card" data-stat="queue_depth"><div class="stat-icon queue-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="stat-content"><span class="stat-value" id="statQueueDepth">0</span><span class="stat-label">Queue Depth</span></div></div>
+            <div class="stat-card" data-stat="duplicates"><div class="stat-icon dedup-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div><div class="stat-content"><span class="stat-value" id="statDuplicates">0</span><span class="stat-label">Duplicates</span></div></div>
+        </section>
+        <div class="panels-grid">
+            <section class="panel search-panel" id="searchPanel">
+                <div class="panel-header"><h2><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Search Index</h2></div>
+                <div class="search-container">
+                    <div class="search-input-wrapper"><input type="text" id="searchInput" class="search-input" placeholder="Search crawled pages..." autocomplete="off"><button class="search-btn" id="searchBtn" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></div>
+                    <div class="search-meta" id="searchMeta"></div>
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+            </section>
+            <section class="panel crawl-panel" id="crawlPanel">
+                <div class="panel-header"><h2><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg> Start Crawl</h2></div>
+                <div class="crawl-form">
+                    <div class="input-group"><label for="seedUrl">Seed URL</label><input type="url" id="seedUrl" class="form-input" placeholder="https://example.com" value="https://example.com"></div>
+                    <div class="input-group"><label for="maxDepth">Max Depth</label><div class="depth-selector"><button class="depth-btn" data-depth="1">1</button><button class="depth-btn active" data-depth="2">2</button><button class="depth-btn" data-depth="3">3</button><button class="depth-btn" data-depth="4">4</button></div></div>
+                    <button class="btn-primary" id="startCrawlBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start Crawl</button>
+                    <div class="crawl-status" id="crawlStatus"></div>
+                </div>
+            </section>
+        </div>
+        <div class="panels-grid">
+            <section class="panel feed-panel" id="feedPanel">
+                <div class="panel-header"><h2><span class="live-dot"></span> Live Crawl Feed</h2><button class="btn-ghost" id="clearFeed">Clear</button></div>
+                <div class="live-feed" id="liveFeed"><div class="feed-empty"><p>Waiting for crawl events...</p><p class="feed-hint">Start a crawl to see real-time events here</p></div></div>
+            </section>
+            <section class="panel pages-panel" id="pagesPanel">
+                <div class="panel-header"><h2><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg> Recent Pages</h2><button class="btn-ghost" id="refreshPages">Refresh</button></div>
+                <div class="pages-table-wrapper" id="pagesTableWrapper">
+                    <table class="pages-table"><thead><tr><th>Title / URL</th><th>Domain</th><th>Status</th><th>Time</th></tr></thead><tbody id="pagesTableBody"><tr class="empty-row"><td colspan="4">No pages crawled yet</td></tr></tbody></table>
+                </div>
+            </section>
+        </div>
+    </main>
+    <footer class="footer"><p>CrawlDB v1.0 &mdash; Distributed Web Crawler &amp; Search Index</p><p class="footer-tech">Python &bull; asyncio &bull; RabbitMQ &bull; MongoDB &bull; Elasticsearch &bull; Docker</p></footer>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
